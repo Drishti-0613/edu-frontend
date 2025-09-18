@@ -1,12 +1,13 @@
-export default function Button({ children }) {
+// src/components/Button.jsx
+export default function Button({ children, type = "button", onClick, disabled }) {
   return (
     <button
-      className="px-4 py-2 rounded-md font-medium"
-      style={{
-        background: "var(--color-primary)",
-        color: "var(--color-text-inverse)",
-        boxShadow: "var(--shadow-sm)"
-      }}
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`w-full py-2 rounded-lg transition 
+        ${disabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"} 
+        text-white`}
     >
       {children}
     </button>

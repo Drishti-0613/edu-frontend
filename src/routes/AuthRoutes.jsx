@@ -1,7 +1,6 @@
 // src/routes/AuthRoutes.jsx
 import { Routes, Route, Navigate } from "react-router-dom";
 import AuthLayout from "@/layouts/AuthLayout";
-
 import Login from "@/pages/auth/Login";
 import Signup from "@/pages/auth/Signup";
 import ForgotPassword from "@/pages/auth/ForgotPassword";

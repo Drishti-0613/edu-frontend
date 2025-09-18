@@ -1,33 +1,43 @@
+// src/pages/auth/ResetPassword.jsx
 import { useState } from "react";
-import PasswordInput from "../../components/PasswordInput";
+import InputField from "../../components/InputField";
 import Button from "../../components/Button";
-import AuthLayout from "../../layouts/AuthLayout";
 
 export default function ResetPassword() {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Password reset submitted (placeholder)");
+    if (password !== confirm) {
+      alert("Passwords do not match!");
+      return;
+    }
+    alert("Password has been reset!");
   };
 
   return (
-    <AuthLayout>
-      <h2 className="text-2xl font-bold text-center mb-6">Reset Password</h2>
-      <form onSubmit={handleSubmit}>
-        <PasswordInput
-          label="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-        <PasswordInput
-          label="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-        <Button type="submit">Reset Password</Button>
-      </form>
-    </AuthLayout>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white shadow-md rounded-xl p-6">
+        <h1 className="text-2xl font-bold text-center mb-6">Reset Password</h1>
+        <form onSubmit={handleSubmit}>
+          <InputField
+            type="password"
+            placeholder="New Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <InputField
+            type="password"
+            placeholder="Confirm Password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            required
+          />
+          <Button type="submit">Reset Password</Button>
+        </form>
+      </div>
+    </div>
   );
 }

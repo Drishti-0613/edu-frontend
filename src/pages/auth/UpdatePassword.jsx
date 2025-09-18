@@ -1,62 +1,46 @@
+// src/pages/auth/UpdatePassword.jsx
 import { useState } from "react";
-import PasswordInput from "../../components/PasswordInput";
+import InputField from "../../components/InputField";
 import Button from "../../components/Button";
-import AuthLayout from "../../layouts/AuthLayout";
 
 export default function UpdatePassword() {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [current, setCurrent] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confirm, setConfirm] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (newPassword !== confirmPassword) {
+    if (newPass !== confirm) {
       setMessage("New passwords do not match!");
       return;
     }
 
-    if (newPassword.length < 8) {
-      setMessage("Password must be at least 8 characters long.");
+    if (newPass.length < 8) {
+      setMessage("Password must be at least 8 characters.");
       return;
     }
 
     setMessage("Password updated successfully!");
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
+    setCurrent("");
+    setNewPass("");
+    setConfirm("");
   };
 
   return (
-    <AuthLayout>
-      <h2 className="text-2xl font-bold mb-6 text-center">Update Password</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white shadow-md rounded-xl p-6">
+        <h1 className="text-2xl font-bold text-center mb-6">Update Password</h1>
+        {message && <p className="mb-4 text-center text-green-600">{message}</p>}
 
-      {message && (
-        <p className="mb-4 text-center text-sm text-green-600">{message}</p>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <PasswordInput
-          label="Current Password"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-        />
-
-        <PasswordInput
-          label="New Password"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-        />
-
-        <PasswordInput
-          label="Confirm New Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-        />
-
-        <Button type="submit">Save Changes</Button>
-      </form>
-    </AuthLayout>
+        <form onSubmit={handleSubmit}>
+          <InputField type="password" placeholder="Current Password" value={current} onChange={(e) => setCurrent(e.target.value)} required />
+          <InputField type="password" placeholder="New Password" value={newPass} onChange={(e) => setNewPass(e.target.value)} required />
+          <InputField type="password" placeholder="Confirm New Password" value={confirm} onChange={(e) => setConfirm(e.target.value)} required />
+          <Button type="submit">Save Changes</Button>
+        </form>
+      </div>
+    </div>
   );
 }
