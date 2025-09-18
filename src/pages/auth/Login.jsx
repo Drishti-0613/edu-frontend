@@ -19,13 +19,21 @@ export default function Login() {
     try {
       const data = await loginUser(email, password);
 
-      // Optionally store token / user data
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+      }
+      if (data?.user) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+      }
 
-      navigate("/dashboard");
-    } catch (errMsg) {
-      setError(errMsg);
+      // ✅ Redirect based on role
+      if (data?.user?.role === "admin") navigate("/admin/dashboard");
+      else if (data?.user?.role === "instructor") navigate("/instructor/dashboard");
+      else navigate("/dashboard");
+
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.response?.data?.message || err.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }
@@ -34,7 +42,6 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-md bg-white p-6 rounded-2xl shadow-xl">
-        {/* Logo */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-blue-600">EduSaaS</h1>
         </div>
@@ -64,23 +71,19 @@ export default function Login() {
           {error && <p className="text-red-600 text-center mt-2">{error}</p>}
         </form>
 
-        {/* Forgot Password */}
         <p className="mt-4 text-center">
           <Link to="/auth/forgot-password" className="text-blue-600 hover:underline">
             Forgot Password?
           </Link>
         </p>
 
-        {/* Divider */}
         <div className="my-6 flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="mx-2 text-sm text-gray-500">or</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        {/* Social Login */}
         <div className="flex gap-3">
-          {/* Google */}
           <button
             type="button"
             className="w-1/2 flex items-center justify-center gap-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 py-2 rounded-md"
@@ -92,8 +95,6 @@ export default function Login() {
             />
             <span className="text-sm font-medium">Google</span>
           </button>
-
-          {/* GitHub */}
           <button
             type="button"
             className="w-1/2 flex items-center justify-center gap-2 border border-gray-300 bg-gray-900 text-white hover:bg-gray-800 py-2 rounded-md"

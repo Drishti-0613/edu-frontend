@@ -1,7 +1,6 @@
-// src/pages/auth/Signup.jsx
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { signupUser } from "../../api/authApi"; // ✅ using your centralized API file
+import { signupUser } from "../../api/authApi";
 import InputField from "../../components/InputField";
 import SelectField from "../../components/SelectField";
 import Button from "../../components/Button";
@@ -9,7 +8,6 @@ import Button from "../../components/Button";
 export default function Signup() {
   const navigate = useNavigate();
 
-  // State
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -43,23 +41,37 @@ export default function Signup() {
       return;
     }
 
+    const payload = {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      username,
+      password,
+      role,
+    };
+
+    console.log("📤 Signup payload being sent:", payload);
+
     try {
       setLoading(true);
 
-      // ✅ payload matches backend expected keys
-      await signupUser({
-        first_name: firstName,
-        last_name: lastName,
-        email,
-        username,
-        password,
-        role,
-      });
+      const response = await signupUser(payload);
+      console.log("✅ Signup successful. Backend response:", response);
 
-      setSuccess("Signup successful! Redirecting...");
-      setTimeout(() => navigate("/auth/login"), 2000);
+      setSuccess("Signup successful! Please login.");
+
+      setTimeout(() => {
+        navigate("/auth/login"); // ✅ redirect to login page
+      }, 1500);
+
     } catch (err) {
-      setError(err.response?.data?.message || "Signup failed. Try again.");
+      console.error("❌ Signup error:", err);
+      console.log("🔎 Backend full error response:", err.response?.data);
+      setError(
+        err.response?.data?.message ||
+        err.response?.data?.error ||
+        "Signup failed. Try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -78,7 +90,12 @@ export default function Signup() {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6l4 2" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 6v6l4 2"
+              />
             </svg>
           </div>
           <h1 className="text-3xl font-bold">Create an Account</h1>
@@ -87,7 +104,6 @@ export default function Signup() {
           </p>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit}>
           <InputField
             label="First Name"
@@ -128,7 +144,6 @@ export default function Signup() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
           />
-
           <SelectField
             label="Role"
             value={role}
@@ -137,7 +152,7 @@ export default function Signup() {
             required
           />
 
-          {/* Terms & Conditions */}
+          {/* Terms */}
           <div className="flex items-center gap-2 mb-3">
             <input
               type="checkbox"
@@ -156,37 +171,42 @@ export default function Signup() {
             </span>
           </div>
 
-          {/* Error / Success */}
           {error && <p className="text-red-600 text-center mb-2">{error}</p>}
           {success && <p className="text-green-600 text-center mb-2">{success}</p>}
 
-          {/* Submit Button */}
           <Button type="submit" disabled={loading}>
             {loading ? "Signing up..." : "Sign Up"}
           </Button>
         </form>
 
-        {/* Divider */}
+        {/* Divider + Social */}
         <div className="my-6 flex items-center">
           <div className="flex-grow border-t border-gray-300"></div>
           <span className="mx-2 text-sm text-gray-500">or</span>
           <div className="flex-grow border-t border-gray-300"></div>
         </div>
 
-        {/* Social Signup */}
         <div className="flex gap-3">
           <button
             type="button"
             className="w-1/2 flex items-center justify-center gap-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 py-2 rounded-lg"
           >
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" />
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              className="w-5 h-5"
+            />
             Google
           </button>
           <button
             type="button"
             className="w-1/2 flex items-center justify-center gap-2 border border-gray-300 bg-gray-900 text-white hover:bg-gray-800 py-2 rounded-lg"
           >
-            <img src="https://www.svgrepo.com/show/512317/github-142.svg" alt="GitHub" className="w-5 h-5 invert" />
+            <img
+              src="https://www.svgrepo.com/show/512317/github-142.svg"
+              alt="GitHub"
+              className="w-5 h-5 invert"
+            />
             GitHub
           </button>
         </div>
